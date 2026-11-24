@@ -24,7 +24,16 @@ Create a `.env` file in the project root and add your OpenAI API key:
 OPENAI_API_KEY=your-api-key
 ```
 
-Keep `.env` local; it is ignored by Git.
+LangSmith tracing also requires a LangSmith API key. Create a personal access
+token in [LangSmith Settings](https://smith.langchain.com/settings) under
+**API Keys**, then add these lines to the same `.env` file:
+
+```dotenv
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=your-langsmith-api-key
+```
+
+Keep `.env` local. Git ignores it.
 
 ## Run
 
