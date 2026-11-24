@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
@@ -20,6 +21,7 @@ generation_prompt = ChatPromptTemplate.from_messages([
     MessagesPlaceholder(variable_name="messages")
 ]);
 
+load_dotenv()
 llm = ChatOpenAI(model_name="gpt-4o", temperature=0.7, max_tokens=500)
-generation_chain = generation_prompt | llm
-reflection_chain = reflection_prompt | llm
+generate_chain = generation_prompt | llm
+reflect_chain = reflection_prompt | llm
