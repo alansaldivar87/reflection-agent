@@ -1,0 +1,12 @@
+[project]
+name = "reflection-agent"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "black>=26.10.1",
+    "isort>=9.0.2",
+    "langchain>=1.5.2",
+    "langchain-openai>=1.8.5",
+    "langgraph>=1.2.24",
+    "python-dotenv>=1.2.4",
+]
