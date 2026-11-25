@@ -44,5 +44,5 @@ def build_graph(model: BaseChatModel | None = None) -> StateGraph:
     builder.set_entry_point(GENERATE)
 
     # Declare the possible destinations so LangGraph can draw both branches.
-    builder.add_conditional_edges(GENERATE, should_continue, [REFLECT, END])
+    builder.add_conditional_edges(GENERATE, should_continue, path_map={REFLECT: REFLECT, END: END})
     return builder
