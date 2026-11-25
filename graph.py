@@ -42,4 +42,8 @@ def build_graph(model: BaseChatModel | None = None) -> StateGraph:
     builder.add_node(GENERATE, generation_node)
     builder.add_node(REFLECT, reflection_node)
     builder.set_entry_point(GENERATE)
+    builder.add_conditional_edges(
+        GENERATE,
+        should_continue
+    )
     return builder
