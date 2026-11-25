@@ -41,9 +41,16 @@ Keep `.env` local. Git ignores it.
 uv run python main.py
 ```
 
-The entry point currently prints a startup message. The workflow still needs
-edges connecting the nodes before it can run the draft, critique, and revision
-loop.
+The entry point currently prints a startup message. To inspect the graph as
+Mermaid source, run:
+
+```shell
+uv run python main.py --mermaid
+```
+
+This command only needs the graph structure and works without API credentials.
+The current graph can route from generation to reflection or stop. The revision
+loop still needs a route from reflection back to generation.
 
 ## Code layout
 
