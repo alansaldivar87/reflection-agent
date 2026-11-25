@@ -1,3 +1,4 @@
+from functools import cache
 from typing import Annotated, TypedDict
 
 from langchain_core.language_models import BaseChatModel
@@ -26,14 +27,20 @@ def should_continue(state: MessageState) -> str:
 
 def build_graph(model: BaseChatModel | None = None) -> StateGraph:
     """Register the draft and critique nodes on a fresh graph builder."""
-    generate_chain, reflect_chain = build_chains(model)
+
+    # Initialize the shared model on the first node call. Drawing only needs the graph.
+    @cache
+    def chains():
+        return build_chains(model)
 
     def generation_node(state: MessageState) -> MessageState:
+        generate_chain, _ = chains()
         draft = generate_chain.invoke({"messages": state["messages"]})
         # The reducer merges this one new draft into the conversation history.
         return {"messages": [draft]}
 
     def reflection_node(state: MessageState) -> MessageState:
+        _, reflect_chain = chains()
         critique = reflect_chain.invoke({"messages": state["messages"]})
         # Put the critique in the human role so the writer sees a revision request.
         return {"messages": [HumanMessage(content=critique.content)]}
