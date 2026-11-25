@@ -41,16 +41,10 @@ Keep `.env` local. Git ignores it.
 uv run python main.py
 ```
 
-The entry point currently prints a startup message. To inspect the graph as
-Mermaid source, run:
-
-```shell
-uv run python main.py --mermaid
-```
-
-This command only needs the graph structure and works without API credentials.
-The graph sends each critique back to generation for a revised draft. After
-each draft, it checks whether the conversation has passed its message limit.
+This prints the graph as Mermaid source and as an ASCII diagram. It works
+without API credentials. The graph sends each critique back to generation for
+a revised draft. After each draft, it checks whether the conversation has
+passed its message limit.
 
 ## Code layout
 
