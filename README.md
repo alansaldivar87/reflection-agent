@@ -41,7 +41,12 @@ Keep `.env` local. Git ignores it.
 uv run python main.py
 ```
 
-The current entry point only prints a startup message. The generation and
-reflection prompt chains are defined in `chain.py`; the LangGraph workflow
-that connects them and runs the draft-review-revision loop is not implemented
-yet.
+The entry point currently prints a startup message. The workflow still needs
+edges connecting the nodes before it can run the draft, critique, and revision
+loop.
+
+## Code layout
+
+- `main.py` is the command-line entry point.
+- `graph.py` defines conversation state, graph nodes, and the routing rule.
+- `chains.py` defines the prompts and builds both chains with a shared chat model.
