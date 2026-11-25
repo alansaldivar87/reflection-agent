@@ -43,6 +43,10 @@ def build_graph(model: BaseChatModel | None = None) -> StateGraph:
     builder.add_node(REFLECT, reflection_node)
     builder.set_entry_point(GENERATE)
 
+    # Send each critique back to the writer for another draft.
+    builder.add_edge(REFLECT, GENERATE)
     # Declare the possible destinations so LangGraph can draw both branches.
-    builder.add_conditional_edges(GENERATE, should_continue, path_map={REFLECT: REFLECT, END: END})
+    builder.add_conditional_edges(
+        GENERATE, should_continue, path_map={REFLECT: REFLECT, END: END}
+    )
     return builder

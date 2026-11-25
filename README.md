@@ -1,8 +1,8 @@
 # X Tech Post Reflection Agent
 
-A small project for generating polished technology posts for X. The planned
-reflection workflow uses LangGraph to draft a post, critique it, and revise it
-based on feedback.
+A small project for generating polished technology posts for X. The reflection
+workflow uses LangGraph to draft a post, critique it, and revise it based on
+feedback.
 
 ## Tech stack
 
@@ -49,8 +49,8 @@ uv run python main.py --mermaid
 ```
 
 This command only needs the graph structure and works without API credentials.
-The current graph can route from generation to reflection or stop. The revision
-loop still needs a route from reflection back to generation.
+The graph sends each critique back to generation for a revised draft. After
+each draft, it checks whether the conversation has passed its message limit.
 
 ## Code layout
 
