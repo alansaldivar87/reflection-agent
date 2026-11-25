@@ -1,10 +1,11 @@
 from functools import cache
-from typing import Annotated, TypedDict
+from typing import Annotated, Literal, TypedDict
 
 from langchain_core.language_models import BaseChatModel
 from langchain_core.messages import BaseMessage, HumanMessage
 from langgraph.graph import END, StateGraph
 from langgraph.graph.message import add_messages
+from langgraph.types import Command
 
 from chains import build_chains
 
@@ -18,11 +19,11 @@ class MessageState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
 
 
-def should_continue(state: MessageState) -> str:
+def should_continue(state: MessageState) -> Command[Literal["reflect", "__end__"]]:
     """Route to reflection until the conversation passes the message limit."""
     if len(state["messages"]) > MAX_HISTORY_MESSAGES:
-        return END
-    return REFLECT
+        return Command(goto=END)
+    return Command(goto=REFLECT)
 
 
 def build_graph(model: BaseChatModel | None = None) -> StateGraph:
@@ -48,12 +49,10 @@ def build_graph(model: BaseChatModel | None = None) -> StateGraph:
     builder = StateGraph(state_schema=MessageState)
     builder.add_node(GENERATE, generation_node)
     builder.add_node(REFLECT, reflection_node)
+    builder.add_node(should_continue)
     builder.set_entry_point(GENERATE)
 
+    builder.add_edge(GENERATE, "should_continue")
     # Send each critique back to the writer for another draft.
     builder.add_edge(REFLECT, GENERATE)
-    # Declare the possible destinations so LangGraph can draw both branches.
-    builder.add_conditional_edges(
-        GENERATE, should_continue, path_map={REFLECT: REFLECT, END: END}
-    )
     return builder
