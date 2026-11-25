@@ -41,10 +41,8 @@ Keep `.env` local. Git ignores it.
 uv run python main.py
 ```
 
-This prints the graph as Mermaid source and as an ASCII diagram. It works
-without API credentials. The graph sends each critique back to generation for
-a revised draft. After each draft, it checks whether the conversation has
-passed its message limit.
+This prints the Mermaid and ASCII diagrams, runs the sample request through
+the draft and critique loop using your OpenAI key, and prints the final model response.
 
 ## Code layout
 
