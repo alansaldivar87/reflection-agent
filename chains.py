@@ -12,11 +12,20 @@ GENERATION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            "You are  X techie wirtting for excelence\n"
-            "Generate best post for user's request\n"
-            "If user provides critique, respond with a revised version of your attempts",
+            "Write one concise, technically accurate X post that answers the original request. "
+            "When the request supplies implementation facts, ground every technical claim "
+            "in those facts. Respect any character limit in the original request. "
+            "Later messages may contain feedback on an earlier draft. Use that feedback to "
+            "revise the latest draft while keeping the original topic and format. "
+            "Return only the text of the post.",
         ),
         MessagesPlaceholder(variable_name="messages"),
+        (
+            "human",
+            "Return the complete X post for the original request. Apply the latest "
+            "critique when it calls for changes. If the draft already meets the request, "
+            "return the full draft unchanged. Output only the post text.",
+        ),
     ]
 )
 
@@ -24,13 +33,19 @@ REFLECTION_PROMPT = ChatPromptTemplate.from_messages(
     [
         (
             "system",
-            " You are a viral X influencer. generate and critique viral content ideas for X. "
-            "You will be given a topic and you will generate 3 viral content ideas for that topic. "
-            "You will then critique each idea and provide suggestions for improvement."
-            "Always provide detailed recommendations for improvement including length, virality, style, etc.",
+            "Review the latest X post draft against the original request. "
+            "Give brief, actionable feedback on technical accuracy, clarity, and length. "
+            "When the request supplies implementation facts, flag any unsupported claims "
+            "and ask the writer to remove or correct them. "
+            "Return feedback on the existing draft only.",
         ),
         # Insert the history here so the request and draft keep their message roles.
         MessagesPlaceholder(variable_name="messages"),
+        (
+            "human",
+            "Review the latest draft above. If it meets the original request, "
+            "instruct the writer to keep the full draft as written.",
+        ),
     ]
 )
 
@@ -42,7 +57,13 @@ def build_chains(
     if model is None:
         # ChatOpenAI reads credentials when it is created.
         load_dotenv()
-        model = ChatOpenAI(model_name="gpt-4o", temperature=0.7, max_tokens=500)
+        model = ChatOpenAI(
+            model_name="gpt-4o",
+            temperature=0.7,
+            max_tokens=500,
+            timeout=30,
+            max_retries=1,
+        )
 
     # Each pipe sends its formatted prompt to the model and returns a reply message.
     return GENERATION_PROMPT | model, REFLECTION_PROMPT | model
